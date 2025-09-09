@@ -8,15 +8,15 @@ load_dotenv()
 api_key = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
-# 이미지 파일을 base64로 인코딩하는 함수
-def encode_image_to_base64(image_path):
+# 이미지 파일을 바이트로 읽는 함수
+def read_image_to_bytes(image_path):
     """
-    주어진 경로의 이미지 파일을 base64 문자열로 인코딩합니다.
+    주어진 경로의 이미지 파일을 바이트로 읽어 반환합니다.
     파일을 찾을 수 없는 경우 None을 반환합니다.
     """
     try:
         with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
+            return image_file.read()
     except FileNotFoundError:
         print(f"오류: '{image_path}' 파일을 찾을 수 없습니다.")
         return None
@@ -25,9 +25,9 @@ def encode_image_to_base64(image_path):
 product_name = input("제품 이름을 입력하세요: ")
 image_path = input("제품 이미지 파일 경로를 입력하세요 (예: './image.jpg'): ")
 
-# 이미지 인코딩
-base64_image = encode_image_to_base64(image_path)
-if base64_image is None:
+# 이미지 파일을 바이트로 읽기
+image_data = read_image_to_bytes(image_path)
+if image_data is None:
     exit()
 
 # Gemini 모델 설정
@@ -63,13 +63,12 @@ system_instruction = (
 )
 
 # prompt에 시스템 프롬프트, 사용자 입력 텍스트, 이미지를 함께 포함
-# Gemini API는 이미지 데이터를 base64 문자열이 아닌 디코딩된 바이트 형태로 받습니다.
 prompt_parts = [
     system_instruction,
     f"제품 이름: {product_name}",
     {
         "mime_type": "image/jpeg",
-        "data": base64.b64decode(base64_image)
+        "data": image_data
     }
 ]
 
