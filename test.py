@@ -2,21 +2,16 @@ import argparse
 import mimetypes
 import os
 import time
-from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
 MODEL_NAME = "gemini-2.5-flash-image-preview"
 
-# Load environment variables from a local .env file if present
-load_dotenv()
 
-
-def remix_images(
+def remix_images( #gemini api key 불러옴 - 바꿀 수 있고, 파라미터를 만들어도 됨
     image_paths: list[str],
     prompt: str,
     output_dir: str,
-    model_name: str = MODEL_NAME,
 ):
     """
     Remixes two images using the Google Generative AI model.
@@ -41,65 +36,15 @@ def remix_images(
 
     print(f"Remixing with {len(image_paths)} images and prompt: {prompt}")
 
-    stream = _generate_with_retry_and_fallback(
-        client=client,
+    stream = client.models.generate_content_stream(
+        model=MODEL_NAME,
         contents=contents,
         config=generate_content_config,
-        preferred_model=model_name,
     )
-
-    if stream is None:
-        raise RuntimeError("Failed to generate content after retries and fallbacks.")
 
     _process_api_stream_response(stream, output_dir)
 
-
-def _generate_with_retry_and_fallback(
-    client: genai.Client,
-    contents,
-    config,
-    preferred_model: str,
-):
-    """Try the preferred model first with retries, then fall back to alternates on 429/quota errors."""
-    from google.genai import errors as genai_errors
-    import time as _time
-
-    fallback_models = [
-        preferred_model,
-        "gemini-2.5-flash",
-        "gemini-2.0-flash",
-        "gemini-1.5-flash",
-    ]
-
-    for model_name in fallback_models:
-        backoff_seconds = 5
-        for attempt in range(3):
-            try:
-                return client.models.generate_content_stream(
-                    model=model_name,
-                    contents=contents,
-                    config=config,
-                )
-            except genai_errors.ClientError as e:
-                message = getattr(e, "message", str(e))
-                status_code = getattr(e, "status_code", None)
-                if status_code == 429 or "RESOURCE_EXHAUSTED" in message:
-                    if attempt < 2:
-                        _time.sleep(backoff_seconds)
-                        backoff_seconds *= 2
-                        continue
-                    else:
-                        break
-                else:
-                    raise
-            except Exception:
-                # Non-quota errors should bubble up after one attempt per model
-                if attempt == 0:
-                    raise
-                break
-    return None
-
-
+#이미지를 불러오는 함수 
 def _load_image_parts(image_paths: list[str]) -> list[types.Part]:
     """Loads image files and converts them into GenAI Part objects."""
     parts = []
@@ -175,12 +120,6 @@ def main():
         default="output",
         help="Directory to save the remixed images.",
     )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default=MODEL_NAME,
-        help=f"Model to use (default: {MODEL_NAME}).",
-    )
 
     args = parser.parse_args()
 
@@ -206,7 +145,6 @@ def main():
         image_paths=all_image_paths,
         prompt=final_prompt,
         output_dir=output_dir,
-        model_name=args.model,
     )
 
 
