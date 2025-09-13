@@ -1,0 +1,82 @@
+{
+    "product": {
+      "type": "목걸이",
+      "material": "실버",
+      "design": "꽃 모양",
+      "features": [
+        "다른 색상의 보석",
+        "반짝이는 표면"
+      ]
+    },
+    "background": {
+      "ideal_color": "화이트",
+      "texture": "단색",
+      "lighting": {
+        "type": "soft"
+      },
+      "style": "미니멀",
+      "prompt": "The image showcases three delicate silver flower pendants with gemstone centers, each suspended by a fine silver chain. The flowers are crafted with intricate, scalloped edges, reflecting light and creating a shimmering effect. The background is a clean, minimalist white, which enhances the metallic sheen of the jewelry and the vibrant colors of the gemstones—ruby red, sapphire blue, and amethyst purple. The composition is balanced, with the pendants evenly spaced, allowing each piece to stand out individually. The camera angle is eye-level, providing a clear view of the jewelry's design and craftsmanship. The lighting is soft and diffused, ensuring the gemstones sparkle without harsh reflections, while the white backdrop maintains a neutral palette, complementing the metallic and gem tones.",
+      "negative_prompt": "busy patterns, harsh shadows, specular clipping on metal, occluding props, over-saturated colors outside palette, tilted horizon, extreme perspective distortion, text overlays, watermarks, low resolution, compression artifacts, banding, motion blur, depth-of-field that hides the subject, human figures, hands",
+      "camera": {
+        "angle": "eye-level",
+        "distance": "closeup"
+      },
+      "palette": [
+        "#868685",
+        "#919190",
+        "#8f8f8d",
+        "#706c6a",
+        "#959493"
+      ]
+    },
+    "layout": {
+      "subject_layout": {
+        "center": [0.3321, 0.4057],
+        "ratio": [0.5, 0.5]
+      },
+      "nongraphic_layout": [
+        {
+          "type": "headline",
+          "bbox": [0.04, 0.04, 0.92, 0.12],
+          "confidence": 0.5
+        },
+        {
+          "type": "headline",
+          "bbox": [0.04, 0.84, 0.92, 0.12],
+          "confidence": 0.5
+        }
+      ],
+      "graphic_layout": [
+        {
+          "type": "logo",
+          "content": "",
+          "bbox": [0.71, 0.04, 0.25, 0.1],
+          "confidence": 0.5
+        },
+        {
+          "type": "underlay",
+          "for": "headline#0",
+          "bbox": [0.025, 0.025, 0.95, 0.15],
+          "style": {
+            "shape": "rounded",
+            "radius": 0.08,
+            "opacity": 0.6
+          },
+          "confidence": 0.6
+        },
+        {
+          "type": "underlay",
+          "for": "headline#1",
+          "bbox": [0.025, 0.825, 0.95, 0.15],
+          "style": {
+            "shape": "rounded",
+            "radius": 0.08,
+            "opacity": 0.6
+          },
+          "confidence": 0.6
+        }
+      ]
+    },
+    "background_objects": []
+  }
+  
